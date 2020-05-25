@@ -1,0 +1,109 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Add User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/shards.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function onClickS() {
+            $("#formId").submit(function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var fpform = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: 'adduser',
+                    data: fpform.serialize(),
+                    dataType: 'html',
+                    success: function (data) {
+                        var title = "Notification";
+                        var body = "Successfully created";
+                        $("#successModal .modal-title").html(title);
+                        $("#successModal .modal-body").html(body);
+                        $('#successModal').modal('show')
+                        document.getElementById("name").value=""
+                        document.getElementById("email").value=""
+                    },
+                    error: function (data) {
+                        var title = "Notification";
+                        var body = "Pls Validate Data ";
+                        $("#successModal .modal-title").html(title);
+                        $("#successModal .modal-body").html(body);
+                        $('#successModal').modal('show')
+                        document.getElementById("name").value=""
+                        document.getElementById("email").value=""
+                    }
+                });
+                return false
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container my-5">
+
+    <h2 class="mb-5">New User</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" th:action="@{/index}" th:object="${user}" method="post" id="formId">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="name" class="col-form-label">Name</label>
+                        <input type="text" th:field="*{name}" class="form-control" id="name" placeholder="Name">
+                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                              class="text-danger">Name Error</span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="email" class="col-form-label">Email</label>
+                        <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="Email">
+                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                              class="text-danger">Email Error</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <button type="submit" class="btn btn-primary" value="Add User" onclick="onClickS();">Add User</button>
+                    </div>
+
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="successModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Modal Header</h4>
+                            </div>
+                            <div id = "myInput" class="modal-body">
+                                <p>Some text in the modal.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </form>
+
+            <form th:action="@{/users}"  method="get" id="formId2">
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <button type="submit" class="btn btn-primary" value="View Users" >View Users</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
