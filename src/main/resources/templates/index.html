@@ -5,10 +5,73 @@
     <title>Users</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script>
+        function refreshPage() {
+            window.location.href='http://localhost:8080/users'
+    }
+
+    $(document).on("click", ".open-ModifyDialog", function () {
+            document.getElementById("email").value = this.dataset.value;
+            document.getElementById("name").value = this.dataset.code;
+            document.getElementById("id").value = this.dataset.id;
+        });
+
+        function onClickS() {
+            $("#updateForm").submit(function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                $('#successModal').modal('toggle');
+                var fpform = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: 'update/',
+                    data: fpform.serialize(),
+                    dataType: 'html',
+                    success: function (data) {
+                        var title = "Notification";
+                        var body = "Successfully created";
+                        $("#notificationModal .modal-title").html(title);
+                        $("#notificationModal .modal-body").html(body);
+                        $('#notificationModal').modal('show')
+                    },
+                    error: function (data) {
+                        var title = "Notification";
+                        var body = "Pls Validate Data ";
+                        $("#notificationModal .modal-title").html(title);
+                        $("#notificationModal .modal-body").html(body);
+                        $('#successModal').modal('show')
+                    }
+                });
+                return false
+            });
+        }
+    </script>
 
 </head>
 <body>
+
+<!-- Modal -->
+<div class="modal fade" id="notificationModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Notificatono</h4>
+            </div>
+            <div id = "notificationModalBody" class="modal-body">
+                <p>Successfull Updated.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refreshPage()">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 <div th:switch="${users}" class="container my-5">
     <div class="row">
         <div class="col-md-6">
@@ -28,15 +91,36 @@
                     <tr th:each="user : ${users}">
                         <td th:text="${user.name}"></td>
                         <td th:text="${user.email}"></td>
-                        <td><a th:href="@{/edit/{id}(id=${user.id})}" class="btn btn-primary" >Edit<i class="fas fa-user-edit ml-2"></i></a></td>
+                        <td><a data-toggle="modal" data-target="#successModal"  th:data-value="${user.email}" th:data-code="${user.name}" th:data-id="${user.id}" class="btn btn-primary open-ModifyDialog" >Edit<i class="fas fa-user-edit ml-2"></i></a></td>
                         <td><a th:href="@{/delete/{id}(id=${user.id})}" class="btn btn-primary">Delete<i class="fas fa-user-times ml-2"></i></a></td>
                     </tr>
                     </tbody>
                 </table>
+                <div class="modal fade" id="successModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->updateForm
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Edit User</h4>
+                            </div>
+                            <div id = "myInput" class="modal-body">
+                                                <div th:replace="update-user :: #updateForm"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             <p class="my-5"><a href="/signup" class="btn btn-primary">Sign Up<i class="fas fa-user-plus ml-2"></i></a></p>
         </div>
     </div>
 </div>
+<!-- Modal -->
+
 </body>
 </html>

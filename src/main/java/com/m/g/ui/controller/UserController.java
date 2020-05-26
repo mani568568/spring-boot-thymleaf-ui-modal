@@ -52,14 +52,12 @@ public class UserController {
         return "update-user";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") long id, @Valid User user,
+    @PostMapping("/update/")
+    public String updateUser(@Valid User user,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
-            user.setId(id);
             return "update-user";
         }
-        user.setId(id);
         userService.processAndSaveUser(user);
         model.addAttribute("users", userService.getAllUsers());
         return "index";
