@@ -9,6 +9,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script>
+        // submitting the form using Java script
+        function submitFormTable(){
+            var form = document.getElementById("testId");
+            form.action ='testTableForm'
+            form.submit();
+        }
+
         function refreshPage() {
             window.location.href='http://localhost:8080/users'
     }
